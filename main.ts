@@ -2,6 +2,7 @@
 // One original dad joke. The program writes it to $MAKEFUN_OUTPUT_DIR/entry.txt
 // (fallback /output), where the sealed scorer reads it (UTF-8, 1-200 characters).
 
+import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -34,7 +35,8 @@ function main(): void {
   if (back !== line) {
     throw new Error(`round-trip mismatch in ${target}`);
   }
-  console.log(`wrote ${target} (${line.length} chars): ${line}`);
+  const digest = createHash("sha256").update(back, "utf8").digest("hex");
+  console.log(`wrote ${target} (${line.length} chars, sha256 ${digest}): ${line}`);
 }
 
 main();
